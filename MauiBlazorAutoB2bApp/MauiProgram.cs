@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using MauiBlazorAutoB2bApp.Shared.Services;
 using MauiBlazorAutoB2bApp.Services;
-
+using Microsoft.Maui.Devices;
 namespace MauiBlazorAutoB2bApp;
 
 public static class MauiProgram
@@ -26,13 +26,79 @@ public static class MauiProgram
 		// Add device-specific services used by the MauiBlazorAutoB2bApp.Shared project
 		builder.Services.AddSingleton<IFormFactor, FormFactor>();
 		// Register WeatherService for dependency injection
-//		builder.Services.AddScoped<WeatherService>();
-		builder.Services.AddScoped(sp =>
-			new WeatherService(new HttpClient
+		builder.Services.AddScoped<WeatherService>();
+		//builder.Services.AddScoped(sp =>
+		//	new WeatherService(new HttpClient
+		//	{
+		//		BaseAddress = new Uri("https://localhost:7038/")
+		//	})
+		//);
+
+		// MauiProgram.cs
+//		builder.Services.AddHttpClient("MyApi", client =>
+//		{
+//#if ANDROID
+//			client.BaseAddress = new Uri("http://10.0.2.2:7038/");
+//#elif IOS && !TARGET_IPHONE_SIMULATOR
+//		        client.BaseAddress = new Uri("http://192.168.65.165:7038/");
+//#else
+//		        client.BaseAddress = new Uri("http://localhost:7038/");
+//#endif
+//		});
+
+
+		//platform == DevicePlatform.Android
+
+		builder.Services.AddHttpClient<WeatherService>(client =>
+		{
+			// same BaseAddress logic you already have…
+			// client.BaseAddress = new Uri("http://localhost:7038/");
+			//DevicePlatform pf = DeviceInfo.Current.Platform;
+			//bool isSim = DeviceInfo.Current.DeviceType == DeviceType.Virtual;
+
+
+#if ANDROID
+			client.BaseAddress = new Uri("https://10.0.2.2:7038/");
+			// client.BaseAddress = new Uri("http://10.0.2.2:5246/");
+			
+#elif IOS && !TARGET_IPHONE_SIMULATOR
+		        client.BaseAddress = new Uri("https://192.168.65.165:7038/");
+#else
+		        client.BaseAddress = new Uri("https://localhost:7038/");
+#endif
+
+			//client.BaseAddress = new Uri(baseUrl);
+
+			//string baseUrl = DeviceInfo.Platform switch
+			//{
+			//	DevicePlatform.Android => "http://10.0.2.2:7038/",
+			//	DevicePlatform.iOS when !DeviceInfo.Idiom.Equals(DeviceIdiom.Simulator)
+			//		=> "http://192.168.65.165:7038/",
+			//	_ => "http://localhost:7038/"
+			//};
+
+			//client.BaseAddress = new Uri(baseUrl);
+
+
+		}).ConfigurePrimaryHttpMessageHandler(() =>
+			// WARNING: This handler accepts any SSL certificate. Use only for development purposes.
+
+			new HttpClientHandler
 			{
-				BaseAddress = new Uri("https://localhost:7038/")
-			})
-		);
+				// accept any cert (dev only!)
+				ServerCertificateCustomValidationCallback =
+					HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+			});
+
+
+
+		//builder.Services.AddScoped(sp =>
+		//	new WeatherService(new HttpClient
+		//	{
+		//		BaseAddress = new Uri("https://localhost:7038/")
+		//	})
+		//);
+
 
 		builder.Services.AddMauiBlazorWebView();
 
