@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README-Azure-B2C.md = README-Azure-B2C.md
 		README-DEEP-RESEARCH-ENTRA.md = README-DEEP-RESEARCH-ENTRA.md
 		README-IP-CONFIG.md = README-IP-CONFIG.md
+		README-Mermaid-Diagram.md = README-Mermaid-Diagram.md
 		README-SOL-GEN.md = README-SOL-GEN.md
 		TinglerIcon.jpg = TinglerIcon.jpg
 	EndProjectSection

@@ -24,6 +24,7 @@
   - [Best Practices and Troubleshooting Tips](#best-practices-and-troubleshooting-tips)
 <!--/TOC-->
 
+
 _
 Great. I will compile a detailed and up-to-date analysis of using Microsoft Entra ID (Azure AD B2C) to implement security for a .NET MAUI Blazor Hybrid application with a web frontend and web API backend.
 This will include architectural best practices, implementation guidance, limitations, and any potential pricing considerations. I’ll update you as soon as the findings are ready.

@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+
 namespace WebApiWeather
 {
 	public class Program
@@ -5,6 +8,36 @@ namespace WebApiWeather
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+			// Add an authentication scheme
+			// Add an authentication scheme
+			//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+			//	.AddMicrosoftIdentityWebApi(builder.Configuration);
+
+			//builder.Services
+			//	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+			//	.AddMicrosoftIdentityWebApi(builder.Configuration);
+
+			builder.Services
+				.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddMicrosoftIdentityWebApi(options =>
+					{
+						builder.Configuration.Bind("AzureAd", options);
+						options.TokenValidationParameters.NameClaimType = "name";
+					},
+					jwtOptions => { builder.Configuration.Bind("AzureAd", jwtOptions); });
+
+			builder.Services.AddAuthorization(options =>
+			{
+				options.AddPolicy("ReadScope", policy =>
+					policy.RequireAuthenticatedUser()
+						.RequireClaim("http://schemas.microsoft.com/identity/claims/scope", "Weather.Read"));
+
+				options.AddPolicy("ReadWriteScope", policy =>
+					policy.RequireAuthenticatedUser()
+						.RequireClaim("http://schemas.microsoft.com/identity/claims/scope", "Weather.ReadWrite"));
+			});
+
+
 
 			// Add services to the container.
 			builder.Services.AddControllers();
