@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Diagnostics;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
-using System.Diagnostics;
 
-namespace SignInMaui.MSALClient
+namespace MauiBlazorAutoB2bApp.MSALClient
 {
     /// <summary>
     /// Contains methods that initialize and use the MSAL SDK

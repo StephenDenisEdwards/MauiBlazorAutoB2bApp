@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.IdentityModel.Abstractions;
 using System.Diagnostics;
+using Microsoft.IdentityModel.Abstractions;
 
-namespace SignInMaui.MSALClient
+namespace MauiBlazorAutoB2bApp.MSALClient
 {
     /// <summary>
     /// An example of how to use MSAL.NET logging

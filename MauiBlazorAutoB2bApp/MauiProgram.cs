@@ -1,9 +1,10 @@
 ﻿//using MauiBlazorAutoB2bApp.MSALClient;
+
+using MauiBlazorAutoB2bApp.MSALClient;
 using Microsoft.Extensions.Logging;
 using MauiBlazorAutoB2bApp.Shared.Services;
 using MauiBlazorAutoB2bApp.Services;
 using Microsoft.Maui.Devices;
-using SignInMaui.MSALClient;
 
 namespace MauiBlazorAutoB2bApp;
 

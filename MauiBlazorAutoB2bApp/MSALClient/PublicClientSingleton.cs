@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 
-namespace SignInMaui.MSALClient
+namespace MauiBlazorAutoB2bApp.MSALClient
 {
     /// <summary>
     /// This is a singleton implementation to wrap the MSALClient and associated classes to support static initialization model for platforms that need this.
