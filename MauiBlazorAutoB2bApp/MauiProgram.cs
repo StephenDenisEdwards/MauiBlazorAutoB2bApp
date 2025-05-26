@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿//using MauiBlazorAutoB2bApp.MSALClient;
+using Microsoft.Extensions.Logging;
 using MauiBlazorAutoB2bApp.Shared.Services;
 using MauiBlazorAutoB2bApp.Services;
 using Microsoft.Maui.Devices;
+using SignInMaui.MSALClient;
+
 namespace MauiBlazorAutoB2bApp;
 
 public static class MauiProgram
@@ -107,6 +110,21 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
+	    // Register MSALClientHelper with Entra External ID B2C config
+	    builder.Services.AddSingleton<MSALClientHelper>(sp =>
+	    {
+		    var config = new AzureAdConfig
+		    {
+			    ClientId = "your-client-id",
+			    Authority = "https://yourtenant.b2clogin.com/tfp/yourtenant/B2C_1_signupsignin",
+			    TenantId = "your-tenant-id",
+			    CacheFileName = "msalcache.dat",
+			    CacheDir = FileSystem.AppDataDirectory
+		    };
+		    return new MSALClientHelper(config);
+	    });
+
+
+		return builder.Build();
     }
 }
