@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AADConsoleTest", "AADConsol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsIdWebApp", "CIAM-AspNetCoreWebApp\MsIdWebApp.csproj", "{DAB95A25-BC21-DBD9-E6CE-86B1824E04AB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MSAL-Tests", "MSAL-Tests", "{63B0D72C-FC43-4F44-A89A-0A30A1DBF08A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,6 +180,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1DEBDD1-A450-4F0E-B72E-A49F8DA3895C} = {63B0D72C-FC43-4F44-A89A-0A30A1DBF08A}
+		{DAB95A25-BC21-DBD9-E6CE-86B1824E04AB} = {63B0D72C-FC43-4F44-A89A-0A30A1DBF08A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20E6FD03-9002-4EBA-ABF2-9DDE2C488842}
