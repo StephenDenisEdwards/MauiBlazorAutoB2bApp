@@ -1,6 +1,6 @@
 ﻿//using MauiBlazorAutoB2bApp.MSALClient;
 
-using MauiBlazorAutoB2bApp.MSALClient;
+//using MauiBlazorAutoB2bApp.MSALClient;
 using Microsoft.Extensions.Logging;
 using MauiBlazorAutoB2bApp.Shared.Services;
 using MauiBlazorAutoB2bApp.Services;
@@ -31,6 +31,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IFormFactor, FormFactor>();
 		// Register WeatherService for dependency injection
 		builder.Services.AddScoped<WeatherService>();
+		builder.Services.AddSingleton<IAuthService, AuthService>();
 		//builder.Services.AddScoped(sp =>
 		//	new WeatherService(new HttpClient
 		//	{
@@ -39,16 +40,16 @@ public static class MauiProgram
 		//);
 
 		// MauiProgram.cs
-//		builder.Services.AddHttpClient("MyApi", client =>
-//		{
-//#if ANDROID
-//			client.BaseAddress = new Uri("http://10.0.2.2:7038/");
-//#elif IOS && !TARGET_IPHONE_SIMULATOR
-//		        client.BaseAddress = new Uri("http://192.168.65.165:7038/");
-//#else
-//		        client.BaseAddress = new Uri("http://localhost:7038/");
-//#endif
-//		});
+		//		builder.Services.AddHttpClient("MyApi", client =>
+		//		{
+		//#if ANDROID
+		//			client.BaseAddress = new Uri("http://10.0.2.2:7038/");
+		//#elif IOS && !TARGET_IPHONE_SIMULATOR
+		//		        client.BaseAddress = new Uri("http://192.168.65.165:7038/");
+		//#else
+		//		        client.BaseAddress = new Uri("http://localhost:7038/");
+		//#endif
+		//		});
 
 
 		//platform == DevicePlatform.Android
@@ -111,19 +112,29 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-	    // Register MSALClientHelper with Entra External ID B2C config
-	    builder.Services.AddSingleton<MSALClientHelper>(sp =>
-	    {
-		    var config = new AzureAdConfig
-		    {
-			    ClientId = "your-client-id",
-			    Authority = "https://yourtenant.b2clogin.com/tfp/yourtenant/B2C_1_signupsignin",
-			    TenantId = "your-tenant-id",
-			    CacheFileName = "msalcache.dat",
-			    CacheDir = FileSystem.AppDataDirectory
-		    };
-		    return new MSALClientHelper(config);
-	    });
+
+#if ANDROID
+	    builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Android.ParentWindowProvider>();
+#elif IOS
+    //builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.iOS.ParentWindowProvider>();
+#elif WINDOWS
+    //builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Windows.ParentWindowProvider>();
+#endif
+
+
+		// Register MSALClientHelper with Entra External ID B2C config
+		//builder.Services.AddSingleton<MSALClientHelper>(sp =>
+		//{
+		// var config = new AzureAdConfig
+		// {
+		//  ClientId = "your-client-id",
+		//  Authority = "https://yourtenant.b2clogin.com/tfp/yourtenant/B2C_1_signupsignin",
+		//  TenantId = "your-tenant-id",
+		//  CacheFileName = "msalcache.dat",
+		//  CacheDir = FileSystem.AppDataDirectory
+		// };
+		// return new MSALClientHelper(config);
+		//});
 
 
 		return builder.Build();
