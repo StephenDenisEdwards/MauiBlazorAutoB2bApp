@@ -1,0 +1,19 @@
+﻿https://learn.microsoft.com/en-gb/entra/external-id/customers/how-to-user-flow-sign-up-sign-in-customers
+
+
+# Creating a User Flow
+
+
+https://entra.microsoft.com/#view/Microsoft_AAD_B2CAdmin/CreateUserJourneyBlade/tenantId/94fd710a-794d-4c3a-a355-9977e46ca1ea/userJourneyId/AADSignupOrSignInWillamette/isCiamTenant~/true
+
+
+
+
+## Assign a registered application to the user flow
+
+https://learn.microsoft.com/en-gb/entra/external-id/customers/how-to-user-flow-add-application
+
+
+## Enable password reset for customers
+
+https://learn.microsoft.com/en-gb/entra/external-id/customers/how-to-enable-password-reset-customers

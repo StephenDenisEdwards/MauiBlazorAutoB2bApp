@@ -1,4 +1,11 @@
-﻿# Authentication
+﻿
+# Samples
+
+https://learn.microsoft.com/en-gb/entra/identity-platform/quickstart-mobile-app-sign-in?toc=%2Fentra%2Fexternal-id%2Ftoc.json&bc=%2Fentra%2Fexternal-id%2Fbreadcrumb%2Ftoc.json&pivots=external&tabs=android-workforce%2Candroid-netmaui-external
+
+
+
+# Authentication
 
 I have a .NET MAUI Blazor Hybrid application. This application provides Android, IOS, Windows and Web interfaces. 
 I want users to be able to signup and to authenticate using Microsft Entra External ID. They will be using their proviate emails as their user ID.
@@ -250,3 +257,199 @@ That extension will automatically register the redirect URIs you set up in Azure
 
 * **Windows**: Declare the `msal{ClientId}` protocol in your app manifest, override `OnActivated` in `App.xaml.cs` to call `AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(...)`.
 * **Web**: Use `AddMsalAuthentication` in your Blazor WebAssembly host—no manual callback wiring needed.
+
+
+
+# Entra App
+
+Today
+Explain the following text primarily based on the surrounding page content: Please add a reply url to your application to use the 'Run user flow' experience.
+This message appears in the Microsoft Entra admin center, specifically in the context of configuring a user flow for customer authentication.
+
+Explanation:
+A user flow in Microsoft Entra External ID allows applications to guide users through sign-up and sign-in processes. To enable this, an application must be properly registered with a reply URL—this is the endpoint where authentication responses (such as access tokens or authorization codes) are sent after a user successfully completes the login process.
+
+Why is the reply URL required?
+Security & Redirect Handling: Without a reply URL, the system won't know where to send authentication responses, making the login process incomplete.
+
+Application Association: The user flow needs to be linked to an application, and the reply URL ensures that users are returned to the correct place after authentication.
+
+How to resolve this?
+You'll need to add a reply URL to your registered application within Microsoft Entra. You can do this by:
+
+Navigating to Microsoft Entra admin center.
+
+Selecting your application.
+
+Configuring the Authentication settings.
+
+Adding a valid reply URL (typically, the application's redirect endpoint).
+
+Since you're working with social media login integration in your MAUI application, ensure that the URL matches what your app is expecting for successful authentication.
+
+Would you like detailed steps for adding the reply URL in Microsoft Entra? I can guide you through it.
+
+What is a valid reply URL format?
+A valid reply URL (also called a redirect URI) must follow these rules to ensure proper authentication in Microsoft Entra External ID:
+
+Format Requirements:
+Must be an HTTPS URL – Authentication responses require encryption to ensure security.
+
+Example: https://yourapp.com/auth/callback
+
+Invalid: http://yourapp.com/auth/callback (because it's not HTTPS)
+
+Must exactly match the registered URL – The redirect URI used in your application must match what is configured in Microsoft Entra exactly.
+
+If your app sends users to https://yourapp.com/auth/callback, that same URL must be registered.
+
+Can include query parameters but must be consistent – While query parameters (?param=value) can exist, they must follow expected patterns and match registered formats.
+
+Must be reachable by your application – The reply URL should be an endpoint your app is actively listening for authentication responses.
+
+If using localhost (for testing), it must be formatted properly:
+
+Example for testing: https://localhost:5001/signin-oidc
+
+Avoid using IP addresses directly like https://127.0.0.1/auth/callback.
+
+Steps to Configure in Microsoft Entra:
+Since you're working with social media login integration in your MAUI application, follow these steps:
+
+Open Microsoft Entra admin center.
+
+Go to App registrations and select your app (Tingler Application).
+
+Navigate to Authentication settings.
+
+Under Platform configurations, add a new redirect URI that matches your app’s authentication flow.
+
+Save changes.
+
+Would you like help troubleshooting possible errors, such as redirect URI mismatches? I can guide you through common issues.
+
+is msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth a valid redirect URL?
+No, msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth is not a valid redirect URL for Microsoft Entra authentication.
+
+Why is it invalid?
+It lacks HTTPS – Microsoft Entra requires redirect URIs to use the HTTPS protocol for security reasons.
+
+It follows a custom scheme (msal...://auth) – This format is typically used for mobile applications that use the MSAL (Microsoft Authentication Library), but it needs additional configuration.
+
+It is missing a registered domain – Entra External ID expects reply URLs to direct authentication responses to a known and registered endpoint.
+
+Possible Solution:
+If you're integrating authentication for your MAUI application, and need to use a custom scheme for mobile deep linking, consider:
+
+Registering the custom URI scheme in your mobile app settings.
+
+Using a valid HTTPS URL for web-based authentication, such as:
+
+https://yourapp.com/auth/callback
+
+https://localhost:5001/signin-oidc (for testing)
+
+Would you like help configuring this properly for MSAL in your MAUI app? I can guide you through it.
+
+Yes
+Since you're configuring authentication for your MAUI application with Microsoft Entra External ID, here’s how to properly handle redirect URIs—including custom schemes like MSAL.
+
+1. Configuring Redirect URIs for MAUI Apps
+In mobile applications, custom URI schemes (like msal{app-id}://auth) are used for MSAL-based authentication flows. Since this differs from web authentication, you must:
+
+Register the custom scheme in your app (Android & iOS).
+
+Configure the matching redirect URI in Microsoft Entra.
+
+2. Setting Up the Redirect URI in Microsoft Entra
+To ensure proper authentication, follow these steps:
+
+Open Microsoft Entra admin center.
+
+Navigate to App registrations → Select Tingler Application.
+
+Click Authentication.
+
+Under Redirect URIs, add:
+
+msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth
+
+AND an HTTPS-based URI for web authentication (if applicable).
+
+Save changes.
+
+3. Configuring the URI in Your MAUI App
+Your mobile application must handle this custom scheme:
+
+Android: Add an intent filter for the redirect URI in AndroidManifest.xml.
+
+iOS: Configure CFBundleURLTypes in Info.plist.
+
+4. Common Issues & Fixes
+If authentication fails, ensure that the redirect URI exactly matches what’s in Microsoft Entra.
+
+If using social media login, confirm that the provider supports custom URI schemes.
+
+Would you like help troubleshooting authentication errors or configuring these settings in MAUI?
+
+There is no ability to add Redirect URIs in the Tingler Application -> Authentication screen
+It looks like the Authentication screen for your Tingler Application in Microsoft Entra doesn't provide an option to add Redirect URIs directly. This is likely because the application does not yet have a platform configuration.
+
+How to Fix This
+Since Redirect URIs are tied to platform configurations, follow these steps:
+
+Go to the Authentication screen in Microsoft Entra admin center.
+
+Look for the section Platform configurations.
+
+Click Add a platform.
+
+Choose the appropriate platform for your app:
+
+Web (for browser-based authentication)
+
+Single-page application (for JavaScript-based apps)
+
+Mobile and desktop applications (for MAUI apps)
+
+Once the platform is added, you should see an option to add Redirect URIs.
+
+Why is this necessary?
+Microsoft Entra requires applications to specify their platform type before allowing Redirect URI configuration. Since you're working with MAUI and social media login integration, selecting the correct platform ensures authentication flows work properly.
+
+Would you like help selecting the right platform for your app? I can guide you through it.
+
+what is the problen now. It says "Need admin approval" when I log in with a local account
+The "Need admin approval" message appears because your Tingler Application requires admin consent to access certain resources in Microsoft Entra External ID. This happens when:
+
+Your tenant is configured to require admin consent for certain permissions.
+
+The application is requesting permissions that require admin approval (such as User.Read.All or Directory.Read.All).
+
+User consent settings prevent non-admin users from granting permissions.
+
+How to Fix This
+Option 1: Grant Admin Consent Manually
+Sign in to Microsoft Entra admin center as a Global Administrator.
+
+Navigate to Enterprise applications → Select Tingler Application.
+
+Go to Permissions → Click Grant admin consent for the required permissions.
+
+Option 2: Adjust User Consent Settings
+If you want non-admin users to log in without requiring approval:
+
+Go to Microsoft Entra admin center.
+
+Navigate to Identity → Users → User settings.
+
+Under User consent settings, allow users to consent to verified applications.
+
+Option 3: Configure Admin Consent Workflow
+If you don’t have admin access, you can request approval:
+
+Enable Admin Consent Workflow in Microsoft Entra.
+
+Users can submit a request for approval, and designated reviewers will grant access.
+
+Would you like help troubleshooting specific permissions for your MAUI application? I can guide you through the exact settings needed.

@@ -29,18 +29,18 @@ public static class MSALClientHelper
 		TenantName = tinglercustomers
 
 	*/
-	public const string Tenant = "tinglercustomers.onmicrosoft.com";
-	public const string AuthorityBase = $"https://tinglercustomers.b2clogin.com/tfp/{Tenant}";
+	//public const string Tenant = "tinglercustomers.onmicrosoft.com";
+	//public const string AuthorityBase = $"https://tinglercustomers.b2clogin.com/tfp/{Tenant}";
 
-	public static readonly string SignUpAuthority = $"{AuthorityBase}/B2C_1_SignUp";
-	public static readonly string SignInAuthority = $"{AuthorityBase}/B2C_1_SignIn";
+	//public static readonly string SignUpAuthority = $"{AuthorityBase}/B2C_1_SignUp";
+	//public static readonly string SignInAuthority = $"{AuthorityBase}/B2C_1_SignIn";
 
-	public static IPublicClientApplication PCA = PublicClientApplicationBuilder
-		.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
-		// We can seed with SignInAuthority, but we'll override at call time.
-		.WithB2CAuthority(SignInAuthority)
-		.WithRedirectUri($"msal{"44d84416-03ea-4c42-8e3a-75a5a4439e5b"}://auth")
-		.Build();
+	//public static IPublicClientApplication PCA = PublicClientApplicationBuilder
+	//	.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
+	//	// We can seed with SignInAuthority, but we'll override at call time.
+	//	.WithB2CAuthority(SignInAuthority)
+	//	.WithRedirectUri($"msal{"44d84416-03ea-4c42-8e3a-75a5a4439e5b"}://auth")
+	//	.Build();
 
-	public static readonly string[] Scopes = { "openid", "offline_access" };
+	//public static readonly string[] Scopes = { "openid", "offline_access" };
 }

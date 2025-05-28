@@ -1,4 +1,5 @@
 ﻿@using MauiBlazorAutoB2bApp.Shared.Services
+@using Microsoft.Identity.Client
 @inject IAuthService AuthService
 @inject NavigationManager Nav
 
@@ -7,7 +8,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _isAuthenticated = (await MSALClientHelper.PCA.GetAccountsAsync()).Any();
+        var pca = PublicClientApplicationBuilder
+            .Create(AuthService.GetClientId())
+            //	// We can seed with SignInAuthority, but we'll override at call time.
+            .WithB2CAuthority(AuthService.GetSignInAuthority())
+            .WithRedirectUri($"msal{AuthService.GetClientId()}://auth")
+            .Build();
+
+        _isAuthenticated = (await pca.GetAccountsAsync()).Any();
     }
 
     private async Task HandleSignUp()

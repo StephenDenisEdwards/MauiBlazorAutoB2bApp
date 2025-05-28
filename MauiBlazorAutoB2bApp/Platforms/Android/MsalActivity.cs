@@ -43,7 +43,7 @@ namespace MauiBlazorAutoB2bApp
 	[IntentFilter(
 		new[] { Intent.ActionView },
 		Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-		DataScheme = "msal{44d84416-03ea-4c42-8e3a-75a5a4439e5b}",
+		DataScheme = "msal44d84416-03ea-4c42-8e3a-75a5a4439e5b",  // msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth
 		DataHost = "auth")]
 	public class MsalActivity : Activity
 	{
@@ -64,6 +64,8 @@ namespace MauiBlazorAutoB2bApp
 
 			// Finish this activity once MSAL has the data
 			Finish();
+
+			base.OnCreate(savedInstanceState);
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

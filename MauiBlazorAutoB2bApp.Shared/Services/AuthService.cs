@@ -5,24 +5,56 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Abstractions;
 
 namespace MauiBlazorAutoB2bApp.Shared.Services
 {
 	public class AuthService : IAuthService
 	{
 		private readonly IParentWindowProvider _parentProvider;
-		private readonly IPublicClientApplication _pca; //= MSALClientHelper.PCA;
+		private IPublicClientApplication _pca; //= MSALClientHelper.PCA;
+		//private readonly string[] _scopes = { }; //{ "openid", "offline_access" };
 		private readonly string[] _scopes = { "openid", "offline_access" };
-		
+		//private readonly string[] _scopes = { "openid" };
+
 		//static readonly string[] Scopes = { "openid", "offline_access" };
+
+
+
 
 		public const string Tenant = "tinglercustomers";
 		public const string AuthorityBase = $"https://{Tenant}.b2clogin.com/tfp/{Tenant}.onmicrosoft.com";
+		//public const string AuthorityBase = $"https://{Tenant}.ciamlogin.com/{Tenant}.onmicrosoft.com";
 
-		public static readonly string SignUpAuthority = $"{AuthorityBase}/B2C_1_SignUp";
+		//public static readonly string SignUpAuthority = $"{AuthorityBase}/B2C_1_SignUp";
 		//public static readonly string SignInAuthority = $"{AuthorityBase}/B2C_1_SignIn";
-		public static readonly string SignInAuthority = $"{AuthorityBase}/B2C_1_SignUpSignIn";
-		
+
+		//public static readonly string SignInAuthority = $"{AuthorityBase}/B2C_1_SignUpSignIn";
+
+		//
+		//
+		public static readonly string UserFlowId = "49c13c68-0e9e-46e7-a599-c9123cc0cd5b";
+
+		//public static readonly string UserFlowId = "Quickstart%20User%20Flow%20ti1fkm";
+		//public static readonly string UserFlowId = "Quickstart User Flow ti1fkm";
+
+
+		public static readonly string SignInAuthority = $"{AuthorityBase}/{UserFlowId}";
+
+		public static readonly string ClientId = "44d84416-03ea-4c42-8e3a-75a5a4439e5b";
+
+
+		public string GetClientId()
+		{
+			return ClientId;
+		}
+
+
+		public string GetSignInAuthority()
+		{
+			return SignInAuthority;
+		}
+
 		public AuthService(IParentWindowProvider parentProvider)
 		{
 			_parentProvider = parentProvider;
@@ -33,18 +65,69 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 			// _pca = MSALClientHelper.PCA;
 
 
-			_pca = PublicClientApplicationBuilder
-				.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
-				// We can seed with SignInAuthority, but we'll override at call time.
-				.WithB2CAuthority(SignInAuthority)
-				.WithRedirectUri($"msal{"44d84416-03ea-4c42-8e3a-75a5a4439e5b"}://auth")
-				.Build();
+			//_pca = PublicClientApplicationBuilder
+			//	.Create(ClientId)
+			//	// We can seed with SignInAuthority, but we'll override at call time.
+			//	.WithB2CAuthority(SignInAuthority)
+			//	.WithRedirectUri($"msal{ClientId}://auth")
+			//	.Build();
 		}
 		// existing fields...
 
 		public async Task<bool> SignInAsync()
 		{
-			var account = (await _pca.GetAccountsAsync()).FirstOrDefault();
+			try
+			{
+				var parentWindowOrActivity = _parentProvider.GetParentWindowOrActivity();
+
+				//_pca = PublicClientApplicationBuilder
+				//	.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
+				//	.WithB2CAuthority("https://tinglercustomers.b2clogin.com/tfp/tinglercustomers.onmicrosoft.com/49c13c68-0e9e-46e7-a599-c9123cc0cd5b")
+				//	.WithRedirectUri("msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth")
+				//	.Build();
+
+				//_pca = PublicClientApplicationBuilder
+				//	.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
+				//	.WithB2CAuthority("https://tinglercustomers.b2clogin.com/tfp/tinglercustomers.onmicrosoft.com/tingler-app-userflow")
+				//	.WithRedirectUri("msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth")
+				//	.Build();
+
+				//_pca = PublicClientApplicationBuilder
+				//	.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
+				//	.WithB2CAuthority("https://tinglercustomers.ciamlogin.com/tinglercustomers.onmicrosoft.com/tingler-app-userflow")
+				//	.WithRedirectUri("msal44d84416-03ea-442-8e3a-75a5a4439e5b://auth")
+				//	.Build();
+
+				_pca = PublicClientApplicationBuilder
+					.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
+					.WithExperimentalFeatures() // this is for upcoming logger
+					.WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
+					.WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
+					.WithIosKeychainSecurityGroup("com.microsoft.adalcache")
+					.Build();
+
+
+				var builder = _pca.AcquireTokenInteractive(_scopes)
+					.WithParentActivityOrWindow(parentWindowOrActivity);
+
+				var result = await builder.ExecuteAsync();
+				return !string.IsNullOrEmpty(result.AccessToken);
+			}
+			catch (MsalException msalEx)
+			{
+				Debug.WriteLine($"MSAL Exception: {msalEx.Message}");
+				return false;
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine($"General Exception: {ex.Message}");
+				return false;
+			}
+		}
+
+		public async Task<bool> SignInAsync_1()
+		{
+//			var account = (await _pca.GetAccountsAsync()).FirstOrDefault();
 			try
 			{
 				// First attempt: interactive authentication
@@ -57,9 +140,17 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 				//	.WithParentActivityOrWindow(parentWindowOrActivity)
 				//	.WithUseEmbeddedWebView(true);
 
+
+				_pca = PublicClientApplicationBuilder
+					.Create(ClientId)
+					// We can seed with SignInAuthority, but we'll override at call time.
+					.WithB2CAuthority(SignInAuthority)
+					.WithRedirectUri($"msal{ClientId}://auth")
+					.Build();
+
 				var builder = _pca
 					.AcquireTokenInteractive(_scopes)
-					.WithB2CAuthority(MSALClientHelper.SignInAuthority)
+					//.WithB2CAuthority(SignInAuthority)
 					.WithParentActivityOrWindow(parentWindowOrActivity);
 
 				/*
@@ -103,7 +194,7 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 				try
 				{
 					var builder = _pca.AcquireTokenInteractive(_scopes)
-						.WithB2CAuthority(MSALClientHelper.SignInAuthority);
+						.WithB2CAuthority(SignInAuthority);
 					builder = ConfigureParentWindow(builder);
 					var result = await builder.ExecuteAsync();
 					return !string.IsNullOrEmpty(result.AccessToken);
@@ -136,7 +227,7 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 		{
 			// Always interactive for sign-up
 			var builder = _pca.AcquireTokenInteractive(_scopes)
-				.WithB2CAuthority(MSALClientHelper.SignUpAuthority);
+				.WithB2CAuthority(SignInAuthority);
 			builder = ConfigureParentWindow(builder);
 			var result = await builder.ExecuteAsync();
 			return !string.IsNullOrEmpty(result.AccessToken);

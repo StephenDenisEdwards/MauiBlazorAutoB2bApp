@@ -2,6 +2,9 @@
 
 public interface IAuthService
 {
+	string GetClientId();
+	string GetSignInAuthority();
+
 	/// <summary>
 	/// Tries to sign in the user (silent then interactive if needed).
 	/// Returns true if sign-in succeeded and a token was acquired.
