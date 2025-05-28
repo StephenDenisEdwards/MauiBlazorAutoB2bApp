@@ -102,9 +102,20 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 					.Create("44d84416-03ea-4c42-8e3a-75a5a4439e5b")
 					.WithExperimentalFeatures() // this is for upcoming logger
 					.WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
+					.WithRedirectUri("msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth") // 
 					.WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
-					.WithIosKeychainSecurityGroup("com.microsoft.adalcache")
+					//.WithIosKeychainSecurityGroup("com.microsoft.adalcache")
 					.Build();
+
+
+				/*
+					WithIosKeychainSecurityGroup 
+					configures MSAL to store its token cache in a specific iOS Keychain security 
+					group. This is useful when you want to share credentials securely between your main app and any app 
+					extensions (or other related apps) that are part of the same keychain access group. Essentially, it 
+					tells MSAL which keychain group to use for persistent token storage on iOS, helping ensure both security 
+					and interoperability among your apps if needed.
+				 */
 
 
 				var builder = _pca.AcquireTokenInteractive(_scopes)

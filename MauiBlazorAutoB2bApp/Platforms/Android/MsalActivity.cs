@@ -47,6 +47,11 @@ namespace MauiBlazorAutoB2bApp
 		DataHost = "auth")]
 	public class MsalActivity : Activity
 	{
+		public MsalActivity()
+		{
+			var x = 1;
+		}
+
 		public static MsalActivity Instance { get; private set; }
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
