@@ -17,3 +17,21 @@ https://learn.microsoft.com/en-gb/entra/external-id/customers/how-to-user-flow-a
 ## Enable password reset for customers
 
 https://learn.microsoft.com/en-gb/entra/external-id/customers/how-to-enable-password-reset-customers
+
+
+## Tingler Application 
+
+https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Authentication/appId/44d84416-03ea-4c42-8e3a-75a5a4439e5b/isMSAApp~/false
+
+You're looking at the authentication settings for your **Tingler Application** in the **Microsoft Entra admin center**, specifically the redirect URIs section. These URIs determine where authentication responses (tokens) are sent after a successful login. 
+
+### Key Points:
+- **MSAL URI (`msal44d84416-03ea-4c42-8e3a-75a5a4439e5b://auth`)**: This is a custom scheme used for mobile authentication with MSAL (Microsoft Authentication Library).
+- **B2C Native Client URI (`https://tinglercustomers.b2clogin.com/oauth2/nativeclient`)**: Typically used for applications integrating with Microsoft Entra External ID (B2C) for handling authentication natively.
+- **Adding a URI**: You can define additional redirect URIs depending on your application's authentication flow needs.
+
+### Next Steps:
+- If you need to support **additional authentication flows**, ensure the required URI is correctly added.
+- If encountering authentication errors, double-check that the redirect URIs match exactly with what’s configured in your application.
+
+Need help troubleshooting something specific? I know you’ve tackled redirect URI configurations before—let’s refine it further!
