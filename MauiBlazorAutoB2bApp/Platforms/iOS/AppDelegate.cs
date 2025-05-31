@@ -7,9 +7,11 @@ namespace MauiBlazorAutoB2bApp;
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate
 {
-    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    //protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    protected override MauiApp CreateMauiApp() =>
+	    MauiProgram.CreateMauiAppAsync().GetAwaiter().GetResult();
 
-    public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+	public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
     {
 	    var urlString = url.AbsoluteString;
 

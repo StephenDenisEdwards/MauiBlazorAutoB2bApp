@@ -35,3 +35,72 @@ You're looking at the authentication settings for your **Tingler Application** i
 - If encountering authentication errors, double-check that the redirect URIs match exactly with what’s configured in your application.
 
 Need help troubleshooting something specific? I know you’ve tackled redirect URI configurations before—let’s refine it further!
+
+
+
+# Diagnosis
+
+When you call `AcquireTokenInteractive` on Android, under the covers MSAL:
+
+1. **Spawns an external browser (or CustomTabs) for you to sign in**,
+2. **Suspends your original app’s activity until the browser hands control back**,
+3. **Then resumes via the `MsalActivity` you registered.**
+
+If anything in that chain is mis‐configured, your call will never complete and your app will look like it’s hung:
+
+* **No browser launch?** You won’t see the UI, and MSAL will just wait indefinitely.
+* **Browser opens but no callback?** Your app stays suspended because no result is pushed back.
+* **Callback activity not wired up?** `AuthenticationContinuationHelper` never fires, so `AcquireTokenInteractive`’s `Task` never returns.
+
+---
+
+### Common culprits
+
+1. **`WithParentActivityOrWindow` not pointing to a valid activity**
+   Make sure you’re passing the actual foreground Activity. In MAUI you need something like:
+
+   ```csharp
+   .WithParentActivityOrWindow(() => Platform.CurrentActivity)
+   ```
+
+   If that’s null, MSAL can’t hook into your window and won’t launch the browser.
+
+2. **`MsalActivity` not firing**
+
+   * Check that your `[Activity]` + `[IntentFilter]` annotations exactly match your redirect URI scheme/host.
+   * Confirm that AndroidManifest.xml (auto-generated or manual) actually contains that `<activity>` entry.
+
+3. **Calling from a non-UI thread**
+   Always invoke `AcquireTokenInteractive` on the main thread. You can wrap it in:
+
+   ```csharp
+   MainThread.InvokeOnMainThreadAsync(async () =>
+   {
+       await _pca.AcquireTokenInteractive(_scopes)
+                 .WithParentActivityOrWindow(...)
+                 .ExecuteAsync();
+   });
+   ```
+
+4. **Debugger time-out or exception swallowing**
+   Sometimes exceptions in the redirection path get swallowed. Try deploying in release mode or attach a log (enable MSAL logging) to see if there’s an underlying error.
+
+---
+
+### How to diagnose
+
+* **Enable MSAL logs**
+
+  ```csharp
+  builder.Services.AddSingleton<IPublicClientApplication>(sp =>
+      PublicClientApplicationBuilder
+          .Create(azureConfig.ClientId)
+          .WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId)
+          .WithRedirectUri(azureConfig.RedirectUri)
+          .WithLogging((lvl, msg, pii) => Debug.WriteLine(msg), LogLevel.Verbose, enablePII: false)
+          .Build());
+  ```
+* **Watch logcat** for the intent being fired back into your `MsalActivity`.
+* **Put breakpoints** in your `MsalActivity.OnCreate` and `OnActivityResult` to confirm they’re hit.
+
+Once you verify that (a) the browser opens, (b) you can sign in, and (c) your `MsalActivity` fires and calls `AuthenticationContinuationHelper`, your `AcquireTokenInteractive` call will complete and return the `AuthenticationResult` as expected.

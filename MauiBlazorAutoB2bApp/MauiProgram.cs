@@ -1,17 +1,23 @@
 ﻿//using MauiBlazorAutoB2bApp.MSALClient;
 
 //using MauiBlazorAutoB2bApp.MSALClient;
+
+using System.Text;
 using Microsoft.Extensions.Logging;
 using MauiBlazorAutoB2bApp.Shared.Services;
 using MauiBlazorAutoB2bApp.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Abstractions;
 using Microsoft.Maui.Devices;
 
 namespace MauiBlazorAutoB2bApp;
 
 public static class MauiProgram
 {
-    public static MauiApp CreateMauiApp()
-    {
+	public static async Task<MauiApp> CreateMauiAppAsync()
+	//public static MauiApp CreateMauiApp()
+	{
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
@@ -20,12 +26,45 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
 
-        //builder.Services.AddHttpClient<WeatherService>(client =>
-        //{
-	       // // client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-	       // // client.BaseAddress = new Uri("https://localhost:7250/"); // Use your API's URL
-	       // client.BaseAddress = new Uri("https://localhost:7238/"); // Use your API's URL
-        //});
+        // Load config
+        //builder.Configuration.AddJsonStream(
+	       // new MemoryStream(
+		      //  Encoding.UTF8.GetBytes(
+			     //   File.ReadAllText(Path.Combine(FileSystem.AppDataDirectory, "appsettings.json"))
+		      //  )
+	       // )
+        //);
+
+        using var stream = await FileSystem.OpenAppPackageFileAsync("appsettings.json");
+        builder.Configuration.AddJsonStream(stream);
+
+		var azureConfig = builder.Configuration.GetSection("AzureAd").Get<AzureAdOptions>();
+
+        // Register MSAL public client with login.microsoftonline.com authority
+        builder.Services.AddSingleton<IPublicClientApplication>(sp =>
+	        PublicClientApplicationBuilder
+		        .Create(azureConfig.ClientId)
+		        .WithExperimentalFeatures() // this is for upcoming logger
+											//.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId)
+
+				.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantDomain, true) // Use true for debug mode to allow authority validation
+		        //.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId, true) // Use true for debug mode to allow authority validation
+
+				.WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
+				.WithRedirectUri(azureConfig.RedirectUri)
+		        .WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
+		        .Build()
+        );
+
+        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+
+		//builder.Services.AddHttpClient<WeatherService>(client =>
+		//{
+		// // client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+		// // client.BaseAddress = new Uri("https://localhost:7250/"); // Use your API's URL
+		// client.BaseAddress = new Uri("https://localhost:7238/"); // Use your API's URL
+		//});
 
 		// Add device-specific services used by the MauiBlazorAutoB2bApp.Shared project
 		builder.Services.AddSingleton<IFormFactor, FormFactor>();

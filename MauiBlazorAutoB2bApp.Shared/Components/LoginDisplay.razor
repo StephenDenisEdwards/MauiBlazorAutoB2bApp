@@ -1,46 +1,64 @@
 ﻿@using MauiBlazorAutoB2bApp.Shared.Services
 @using Microsoft.Identity.Client
-@inject IAuthService AuthService
+@* @inject IAuthService AuthService *@
+@inject IAuthenticationService AuthenticationService
 @inject NavigationManager Nav
 
 @code {
     private bool _isAuthenticated;
+    private bool _isSignedIn;
+    private IAccount? _user;
 
     protected override async Task OnInitializedAsync()
     {
-        var pca = PublicClientApplicationBuilder
-            .Create(AuthService.GetClientId())
-            //	// We can seed with SignInAuthority, but we'll override at call time.
-            .WithB2CAuthority(AuthService.GetSignInAuthority())
-            .WithRedirectUri($"msal{AuthService.GetClientId()}://auth")
-            .Build();
+        // var pca = PublicClientApplicationBuilder
+        //     .Create(AuthService.GetClientId())
+        //     //	// We can seed with SignInAuthority, but we'll override at call time.
+        //     .WithB2CAuthority(AuthService.GetSignInAuthority())
+        //     .WithRedirectUri($"msal{AuthService.GetClientId()}://auth")
+        //     .Build();
 
-        _isAuthenticated = (await pca.GetAccountsAsync()).Any();
+        // _isAuthenticated = (await pca.GetAccountsAsync()).Any();
     }
 
     private async Task HandleSignUp()
     {
-        if (await AuthService.SignUpAsync())
-        {
-            _isAuthenticated = true;
-            Nav.NavigateTo("/", true);
-        }
+
+
+        // if (await AuthService.SignUpAsync())
+        // {
+        //     _isAuthenticated = true;
+        //     Nav.NavigateTo("/", true);
+        // }
     }
 
     private async Task HandleSignIn()
     {
-        if (await AuthService.SignInAsync())
+
+        AuthenticationResult result = await AuthenticationService.SignInAsync();
+        _user = result.Account;
+        _isSignedIn = true;
+
+
+        if (string.IsNullOrWhiteSpace(result.AccessToken))
         {
             _isAuthenticated = true;
             Nav.NavigateTo("/", true);
         }
     }
 
+    private async Task SignOut()
+    {
+        // await AuthService.SignOutAsync();
+        // _user = null;
+        // _isSignedIn = false;
+    }
+
     private async Task HandleSignOut()
     {
-        await AuthService.SignOutAsync();
-        _isAuthenticated = false;
-        Nav.NavigateTo("/", true);
+        // await AuthService.SignOutAsync();
+        // _isAuthenticated = false;
+        // Nav.NavigateTo("/", true);
     }
 }
 @if (!_isAuthenticated)
