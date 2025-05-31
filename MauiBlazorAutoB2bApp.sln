@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		MAUI-AUTHENTICATION.md = MAUI-AUTHENTICATION.md
 		README-.NET MAUI Blazor Hybrid Web App.md = README-.NET MAUI Blazor Hybrid Web App.md
 		README-DEEP-RESEARCH-ENTRA.md = README-DEEP-RESEARCH-ENTRA.md
+		README-Authentication Flow Diagrams.md = README-Authentication Flow Diagrams.md
 		README-IP-CONFIG.md = README-IP-CONFIG.md
 		README-Mermaid-Diagram.md = README-Mermaid-Diagram.md
 		README-Microsoft Entra External ID.md = README-Microsoft Entra External ID.md
 		README-SOL-GEN.md = README-SOL-GEN.md
-		README-xx.md = README-xx.md
 		TinglerIcon.jpg = TinglerIcon.jpg
 	EndProjectSection
 EndProject
