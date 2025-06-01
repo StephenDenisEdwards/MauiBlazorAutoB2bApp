@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Util;
 using Microsoft.Identity.Client;
 
 namespace MauiBlazorAutoB2bApp
@@ -34,6 +35,9 @@ namespace MauiBlazorAutoB2bApp
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
+			// Inside a method, for example in OnCreate:
+			Log.Debug("MsalActivity", "Debug message: Start OnCreate() called.");
+
 			Instance = this;
 			base.OnCreate(savedInstanceState);
 
@@ -45,19 +49,23 @@ namespace MauiBlazorAutoB2bApp
 
 			// Finish this activity
 			Finish();
+			Log.Debug("MsalActivity", "Debug message: End OnCreate() called.");
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
 		{
+			Log.Debug("MsalActivity", "Debug message: Start OnActivityResult() called.");
 			base.OnActivityResult(requestCode, resultCode, data);
 			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(
 				requestCode,
 				resultCode,
 				data);
+			Log.Debug("MsalActivity", "Debug message: End OnActivityResult() called.");
 		}
 
 		protected override void OnNewIntent(Intent intent)
 		{
+			Log.Debug("MsalActivity", "Debug message: Start OnNewIntent() called.");
 			base.OnNewIntent(intent);
 
 			// Pass the redirect back into MSAL
@@ -68,6 +76,7 @@ namespace MauiBlazorAutoB2bApp
 
 			// Finish this activity so MAUI can resume
 			Finish();
+			Log.Debug("MsalActivity", "Debug message: End OnNewIntent() called.");
 		}
 	}
 }

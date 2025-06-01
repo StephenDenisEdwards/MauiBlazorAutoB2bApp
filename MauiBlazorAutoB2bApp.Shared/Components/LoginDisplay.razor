@@ -3,6 +3,7 @@
 @* @inject IAuthService AuthService *@
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 
 @code {
     private bool _isAuthenticated;
@@ -18,7 +19,13 @@
         //     .WithRedirectUri($"msal{AuthService.GetClientId()}://auth")
         //     .Build();
 
-        // _isAuthenticated = (await pca.GetAccountsAsync()).Any();
+        //_isAuthenticated = (await pca.GetAccountsAsync()).Any();
+    }
+
+    private async Task ShowJsAlert()
+    {
+        // Pops up a standard browser/BlazorWebView alert
+        await JS.InvokeVoidAsync("alert", "Hello from JS alert!");
     }
 
     private async Task HandleSignUp()
@@ -30,6 +37,7 @@
         //     _isAuthenticated = true;
         //     Nav.NavigateTo("/", true);
         // }
+        await ShowJsAlert();
     }
 
     private async Task HandleSignIn()

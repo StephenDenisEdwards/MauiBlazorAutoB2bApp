@@ -35,11 +35,11 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 		{
 			try
 			{
-				var accounts = await _pca.GetAccountsAsync();
-				return await _pca.AcquireTokenSilent(_scopes, accounts.FirstOrDefault())
-					.ExecuteAsync();
+				//var accounts = await _pca.GetAccountsAsync();
+				//return await _pca.AcquireTokenSilent(_scopes, accounts.FirstOrDefault())
+				//	.ExecuteAsync();
 
-				// throw new MsalUiRequiredException("Test", "Test exception for testing purposes");
+				throw new MsalUiRequiredException("Test", "Test exception for testing purposes");
 
 			}
 			catch (MsalUiRequiredException me)
