@@ -16,6 +16,7 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 		private readonly IPublicClientApplication _pca;
 		private readonly string[] _scopes;
 		private readonly IParentWindowProvider _parent;
+		private readonly string? _signUpAuthority;  // New field for sign-up
 
 		public AuthenticationService(
 			IPublicClientApplication pca,
@@ -30,6 +31,9 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 				.GetChildren()
 				.Select(section => section.Value)
 				.ToArray();  // Ensure 'Microsoft.Extensions.DependencyInjection' is referenced  
+
+			// Load the sign-up authority if available
+			_signUpAuthority = config["AzureAd:SignUpAuthority"];
 		}
 
 		public async Task<AuthenticationResult> SignInAsync()
@@ -101,6 +105,9 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 
 			}
 		}
+
+
+
 
 		public async Task SignOutAsync()
 		{

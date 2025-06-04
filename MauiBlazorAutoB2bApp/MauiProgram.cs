@@ -50,7 +50,8 @@ public static class MauiProgram
 				.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantDomain, true) // Use true for debug mode to allow authority validation
 		        //.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId, true) // Use true for debug mode to allow authority validation
 
-				.WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
+				// .WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
+		        .WithAuthority("https://tinglercustomers.ciamlogin.com/tinglercustomers.onmicrosoft.com/tingler-app-userflow")
 				.WithRedirectUri(azureConfig.RedirectUri)
 		        .WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
 		        .Build()
