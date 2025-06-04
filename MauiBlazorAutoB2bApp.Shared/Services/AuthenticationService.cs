@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,8 +70,10 @@ namespace MauiBlazorAutoB2bApp.Shared.Services
 				//{
 					result = await aquireFunction
 						.ExecuteAsync()
-						.ConfigureAwait(false);
+						//.ConfigureAwait(false);
+						.ConfigureAwait(true);
 				//});
+
 
 				return result;
 

@@ -1,4 +1,5 @@
-﻿@using MauiBlazorAutoB2bApp.Shared.Services
+﻿@using System.Diagnostics
+@using MauiBlazorAutoB2bApp.Shared.Services
 @using Microsoft.Identity.Client
 @* @inject IAuthService AuthService *@
 @inject IAuthenticationService AuthenticationService
@@ -46,10 +47,20 @@
         AuthenticationResult result = await AuthenticationService.SignInAsync();
         _user = result.Account;
         _isSignedIn = true;
-
-
-        if (string.IsNullOrWhiteSpace(result.AccessToken))
+        if (_user is null)
         {
+            await JS.InvokeVoidAsync("alert", "_user is null");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", _user.Username);
+        }
+
+      //  await JS.InvokeVoidAsync("Access Token", result.AccessToken);
+
+        if (!string.IsNullOrWhiteSpace(result.AccessToken))
+        {
+            await JS.InvokeVoidAsync("alert", result.AccessToken);
             _isAuthenticated = true;
             Nav.NavigateTo("/", true);
         }
