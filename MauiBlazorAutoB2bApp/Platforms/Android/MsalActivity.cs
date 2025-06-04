@@ -41,14 +41,14 @@ namespace MauiBlazorAutoB2bApp
 			Instance = this;
 			base.OnCreate(savedInstanceState);
 
-			// Pass the incoming intent to MSAL to complete authentication
-			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(
-				requestCode: 0,
-				resultCode: Result.Ok,
-				data: Intent);
+			//// Pass the incoming intent to MSAL to complete authentication
+			//AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(
+			//	requestCode: 0,
+			//	resultCode: Result.Ok,
+			//	data: Intent);
 
-			// Finish this activity
-			Finish();
+			//// Finish this activity
+			//Finish();
 			Log.Debug("MsalActivity", "Debug message: End OnCreate() called.");
 		}
 
@@ -56,10 +56,10 @@ namespace MauiBlazorAutoB2bApp
 		{
 			Log.Debug("MsalActivity", "Debug message: Start OnActivityResult() called.");
 			base.OnActivityResult(requestCode, resultCode, data);
-			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(
-				requestCode,
-				resultCode,
-				data);
+			//AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(
+			//	requestCode,
+			//	resultCode,
+			//	data);
 			Log.Debug("MsalActivity", "Debug message: End OnActivityResult() called.");
 		}
 
@@ -68,14 +68,14 @@ namespace MauiBlazorAutoB2bApp
 			Log.Debug("MsalActivity", "Debug message: Start OnNewIntent() called.");
 			base.OnNewIntent(intent);
 
-			// Pass the redirect back into MSAL
-			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(
-				requestCode: 0,
-				resultCode: Result.Ok,
-				data: intent);
+			//// Pass the redirect back into MSAL
+			//AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(
+			//	requestCode: 0,
+			//	resultCode: Result.Ok,
+			//	data: intent);
 
-			// Finish this activity so MAUI can resume
-			Finish();
+			//// Finish this activity so MAUI can resume
+			//Finish();
 			Log.Debug("MsalActivity", "Debug message: End OnNewIntent() called.");
 		}
 	}
