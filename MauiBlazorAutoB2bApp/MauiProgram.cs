@@ -2,14 +2,15 @@
 
 //using MauiBlazorAutoB2bApp.MSALClient;
 
-using System.Text;
-using Microsoft.Extensions.Logging;
-using MauiBlazorAutoB2bApp.Shared.Services;
 using MauiBlazorAutoB2bApp.Services;
+using MauiBlazorAutoB2bApp.Shared.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
 using Microsoft.Maui.Devices;
+using System.Text;
 
 namespace MauiBlazorAutoB2bApp;
 
@@ -40,24 +41,65 @@ public static class MauiProgram
 
 		var azureConfig = builder.Configuration.GetSection("AzureAd").Get<AzureAdOptions>();
 
-        // Register MSAL public client with login.microsoftonline.com authority
-        builder.Services.AddSingleton<IPublicClientApplication>(sp =>
-	        PublicClientApplicationBuilder
-		        .Create(azureConfig.ClientId)
-		        .WithExperimentalFeatures() // this is for upcoming logger
-											//.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId)
+		/*
+			"CacheFileName": "msal_cache.txt",
+		    "CacheDir": "C:/temp"
+		*/
+		
+		//var cacheDir = Path.Combine(FileSystem.AppDataDirectory, "msal_cache");
+		//var storageProperties = new StorageCreationPropertiesBuilder("msalcache.dat", cacheDir)
+		//	.Build();
+		//var cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties);
 
-				.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantDomain, true) // Use true for debug mode to allow authority validation
-		        //.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId, true) // Use true for debug mode to allow authority validation
 
-				// .WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
-		        .WithAuthority("https://tinglercustomers.ciamlogin.com/tinglercustomers.onmicrosoft.com/tingler-app-userflow")
-				.WithRedirectUri(azureConfig.RedirectUri)
-		        .WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
-		        .Build()
-        );
+		if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+		{
 
-        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+			var storageProperties = new StorageCreationPropertiesBuilder("msal_cache.txt", "C:/temp")
+				.Build();
+
+			var cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties);
+
+
+			// Register the cache helper as a singleton.
+			builder.Services.AddSingleton(cacheHelper);
+		}
+		else if(DeviceInfo.Current.Platform == DevicePlatform.Android ||
+				DeviceInfo.Current.Platform == DevicePlatform.iOS)
+		{
+			// For these platforms, file cache is not supported; use the built-in in-memory cache.
+			// Optionally, you can implement a custom token cache serialization using Secure Storage.
+			//builder.Logging.l?.LogWarning("File cache is not supported on this platform; using in-memory token caching.");
+		}
+
+
+
+		// Register MSAL public client with login.microsoftonline.com authority
+		builder.Services.AddSingleton<IPublicClientApplication>(sp =>
+				PublicClientApplicationBuilder
+					.Create(azureConfig.ClientId)
+					.WithExperimentalFeatures() // this is for upcoming logger
+												//.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId)
+
+					.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantDomain, true) // Use true for debug mode to allow authority validation
+																								   //.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId, true) // Use true for debug mode to allow authority validation
+
+					// .WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
+					.WithAuthority("https://tinglercustomers.ciamlogin.com/tinglercustomers.onmicrosoft.com/tingler-app-userflow")
+					.WithRedirectUri(azureConfig.RedirectUri)
+					.WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
+					.Build()
+			);
+
+		// Set up the secure token cache(for Android / iOS)
+		if (DeviceInfo.Current.Platform != DevicePlatform.Android &&
+		    DeviceInfo.Current.Platform != DevicePlatform.iOS)
+		{
+			//_ = new SecureTokenCacheHelper(publicClient);
+			builder.Services.AddSingleton<SecureTokenCacheHelper>();
+		}
+
+		builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 
 		//builder.Services.AddHttpClient<WeatherService>(client =>

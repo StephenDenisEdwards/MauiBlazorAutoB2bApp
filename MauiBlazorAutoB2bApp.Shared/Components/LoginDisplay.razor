@@ -1,4 +1,5 @@
-﻿@using System.Diagnostics
+﻿@using System.ComponentModel.Design
+@using System.Diagnostics
 @using MauiBlazorAutoB2bApp.Shared.Services
 @using Microsoft.Identity.Client
 @* @inject IAuthService AuthService *@
@@ -7,21 +8,47 @@
 @inject IJSRuntime JS
 
 @code {
-    private bool _isAuthenticated;
-    private bool _isSignedIn;
-    private IAccount? _user;
+    // private bool _isAuthenticated;
+    // private bool _isSignedIn;
+    // private IAccount? _user;
 
+    // private string? _token;
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     // var pca = PublicClientApplicationBuilder
+    //     //     .Create(AuthenticationService.get.GetClientId())
+    //     //     //	// We can seed with SignInAuthority, but we'll override at call time.
+    //     //     .WithB2CAuthority(AuthService.GetSignInAuthority())
+    //     //     .WithRedirectUri($"msal{AuthService.GetClientId()}://auth")
+    //     //     .Build();
+
+    //     // _isAuthenticated = (await pca.GetAccountsAsync()).Any();
+    // }
     protected override async Task OnInitializedAsync()
     {
-        // var pca = PublicClientApplicationBuilder
-        //     .Create(AuthService.GetClientId())
-        //     //	// We can seed with SignInAuthority, but we'll override at call time.
-        //     .WithB2CAuthority(AuthService.GetSignInAuthority())
-        //     .WithRedirectUri($"msal{AuthService.GetClientId()}://auth")
-        //     .Build();
+        await AuthenticationService.UpdateFromCache();
 
-        //_isAuthenticated = (await pca.GetAccountsAsync()).Any();
+        StateHasChanged();
     }
+
+    // private async Task UpdateFromCache()
+    // {
+    //     _isAuthenticated = false;
+    //     _isSignedIn = false;
+
+    //     // Attempt to restore the user from the persistent cache.
+    //     _user = await AuthenticationService.GetCachedAccountAsync();
+    //     _token = await AuthenticationService.GetCachedTokenAsync();
+
+    //     if (_user != null)
+    //     {
+    //         if (!string.IsNullOrEmpty(_token))
+    //         {
+    //             _isAuthenticated = true;
+    //         }
+    //         _isSignedIn = true;
+    //     }
+    // }
 
     private async Task ShowJsAlert()
     {
@@ -45,63 +72,78 @@
     {
 
         AuthenticationResult result = await AuthenticationService.SignInAsync();
-        _user = result.Account;
-        _isSignedIn = true;
-        if (_user is null)
-        {
-            await JS.InvokeVoidAsync("alert", "_user is null");
-        }
-        else
-        {
-            await JS.InvokeVoidAsync("alert", _user.Username);
-        }
+        StateHasChanged();
+//        await UpdateFromCache();
 
-      //  await JS.InvokeVoidAsync("Access Token", result.AccessToken);
+        // _token = result.AccessToken;
 
-        if (!string.IsNullOrWhiteSpace(result.AccessToken))
-        {
-            await JS.InvokeVoidAsync("alert", result.AccessToken);
-            _isAuthenticated = true;
-            Nav.NavigateTo("/", true);
-        }
+        // _user = result.Account;
+        // _isSignedIn = true;
+        // // if (_user is null)
+        // // {
+        // //     await JS.InvokeVoidAsync("alert", "_user is null");
+        // // }
+        // // else
+        // // {
+        // //     await JS.InvokeVoidAsync("alert", _user.Username);
+        // // }
+
+        // //  await JS.InvokeVoidAsync("Access Token", result.AccessToken);
+
+        // if (!string.IsNullOrWhiteSpace(_token))
+        // {
+        //     // await JS.InvokeVoidAsync("alert", result.AccessToken);
+        //     _isAuthenticated = true;
+        //     StateHasChanged(); // Refresh the component to show the sign-out button
+        //     // Optionally, remove or comment out the line below if you don't want to navigate away.
+        //     // Nav.NavigateTo("/", true);
+        // }
     }
 
-    private async Task SignOut()
-    {
-        // await AuthService.SignOutAsync();
-        // _user = null;
-        // _isSignedIn = false;
-    }
+    // private async Task SignOut()
+    // {
+    //     await AuthService.SignOutAsync();
+    //     _user = null;
+    //     _isSignedIn = false;
+    // }
 
     private async Task HandleSignOut()
     {
-        // await AuthService.SignOutAsync();
-        // _isAuthenticated = false;
-        // Nav.NavigateTo("/", true);
+        await AuthenticationService.SignOutAsync();
+        // await UpdateFromCache();
+        //_isAuthenticated = false;
+        StateHasChanged();
+        //Nav.NavigateTo("/", true);
     }
 }
-@if (!_isAuthenticated)
+@if (!AuthenticationService.IsAuthenticated)
 {
-    <button class="btn btn-success me-2" @onclick="HandleSignUp">Sign up</button>
-    <button class="btn btn-primary"    @onclick="HandleSignIn">Sign in</button>
+    <button class="btn btn-primary" @onclick="HandleSignIn">Sign in</button>
 }
 else
 {
-    <button class="btn btn-secondary"  @onclick="HandleSignOut">Sign out</button>
+    <button class="btn btn-secondary" @onclick="HandleSignOut">Sign out</button>
 }
 
-@* <h1>Login</h1>
+<div class="user-details mt-2" style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
 
+    @if (AuthenticationService.IsSignedIn && AuthenticationService.User is not null)
+{
+        <p><strong>User Details:</strong></p>
+        <p>Username: @AuthenticationService.User.Username</p>
+}
 
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-info" @onclick="IncrementCount">Click me</button>
-
-@code {
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    @if (AuthenticationService.IsAuthenticated && !string.IsNullOrEmpty(AuthenticationService.Token))
     {
-        currentCount++;
+        <p><strong>Access Token:</strong></p>
+        <p>Token: @AuthenticationService.Token</p>
     }
-} *@
+    else
+    {
+        if (AuthenticationService.IsSignedIn)
+        {
+            <p><strong>Access Token:</strong></p>
+            <p>Not Authenticated (Token Expired ?)</p>
+        }
+    }
+</div>
