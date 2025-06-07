@@ -36,16 +36,31 @@ public static class MauiProgram
 	       // )
         //);
 
-        using var stream = await FileSystem.OpenAppPackageFileAsync("appsettings.json");
-        builder.Configuration.AddJsonStream(stream);
 
-		var azureConfig = builder.Configuration.GetSection("AzureAd").Get<AzureAdOptions>();
+		if (DeviceInfo.Current.Platform == DevicePlatform.Android)
+		{
+			using var stream = await FileSystem.OpenAppPackageFileAsync("appsettings-android.json");
+			builder.Configuration.AddJsonStream(stream);
+		}
+		else if (DeviceInfo.Current.Platform == DevicePlatform.iOS)
+		{
+			using var stream = await FileSystem.OpenAppPackageFileAsync("appsettings-ios.json");
+			builder.Configuration.AddJsonStream(stream);
+		}
+		else if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+		{
+			using var stream = await FileSystem.OpenAppPackageFileAsync("appsettings-windows.json");
+			builder.Configuration.AddJsonStream(stream);
+		}
+
+		AzureAdOptions? azureConfig = builder.Configuration.GetSection("AzureAd").Get<AzureAdOptions>();
+
 
 		/*
 			"CacheFileName": "msal_cache.txt",
 		    "CacheDir": "C:/temp"
 		*/
-		
+
 		//var cacheDir = Path.Combine(FileSystem.AppDataDirectory, "msal_cache");
 		//var storageProperties = new StorageCreationPropertiesBuilder("msalcache.dat", cacheDir)
 		//	.Build();
@@ -58,13 +73,13 @@ public static class MauiProgram
 			var storageProperties = new StorageCreationPropertiesBuilder("msal_cache.txt", "C:/temp")
 				.Build();
 
-			var cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties);
+			MsalCacheHelper? cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties);
 
 
 			// Register the cache helper as a singleton.
 			builder.Services.AddSingleton(cacheHelper);
 		}
-		else if(DeviceInfo.Current.Platform == DevicePlatform.Android ||
+		else if (DeviceInfo.Current.Platform == DevicePlatform.Android ||
 				DeviceInfo.Current.Platform == DevicePlatform.iOS)
 		{
 			// For these platforms, file cache is not supported; use the built-in in-memory cache.
@@ -72,7 +87,14 @@ public static class MauiProgram
 			//builder.Logging.l?.LogWarning("File cache is not supported on this platform; using in-memory token caching.");
 		}
 
-
+		// ?????
+		// Set up the secure token cache(for Android / iOS)
+		//if (DeviceInfo.Current.Platform != DevicePlatform.Android &&
+		//    DeviceInfo.Current.Platform != DevicePlatform.iOS)
+		//{
+		//	//_ = new SecureTokenCacheHelper(publicClient);
+		//	builder.Services.AddSingleton<SecureTokenCacheHelper>();
+		//}
 
 		// Register MSAL public client with login.microsoftonline.com authority
 		builder.Services.AddSingleton<IPublicClientApplication>(sp =>
@@ -91,14 +113,7 @@ public static class MauiProgram
 					.Build()
 			);
 
-		// Set up the secure token cache(for Android / iOS)
-		if (DeviceInfo.Current.Platform != DevicePlatform.Android &&
-		    DeviceInfo.Current.Platform != DevicePlatform.iOS)
-		{
-			//_ = new SecureTokenCacheHelper(publicClient);
-			builder.Services.AddSingleton<SecureTokenCacheHelper>();
-		}
-
+		
 		builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 
@@ -113,7 +128,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IFormFactor, FormFactor>();
 		// Register WeatherService for dependency injection
 		builder.Services.AddScoped<WeatherService>();
-		builder.Services.AddSingleton<IAuthService, AuthService>();
+//		builder.Services.AddSingleton<IAuthService, AuthService>();
 		//builder.Services.AddScoped(sp =>
 		//	new WeatherService(new HttpClient
 		//	{
@@ -196,12 +211,27 @@ public static class MauiProgram
 
 
 #if ANDROID
-	    builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Android.ParentWindowProvider>();
+	   builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Android.ParentWindowProvider>();
 #elif IOS
-    //builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.iOS.ParentWindowProvider>();
+    builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.iOS.ParentWindowProvider>();
+#elif WINUI
+    builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Platforms.Windows.ParentWindowProvider>();
 #elif WINDOWS
-    //builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Windows.ParentWindowProvider>();
+    builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Platforms.Windows.ParentWindowProvider>();
 #endif
+
+		//if (DeviceInfo.Current.Platform == DevicePlatform.Android)
+		//{
+		//	builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.Android.ParentWindowProvider>();
+		//}
+		//else if (DeviceInfo.Current.Platform == DevicePlatform.iOS)
+		//{
+		//	builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.iOS.ParentWindowProvider>();
+		//}
+		//else if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+		//{
+		//builder.Services.AddSingleton<IParentWindowProvider, MauiBlazorAutoB2bApp.WinUi.ParentWindowProvider>();
+		//}
 
 
 		// Register MSALClientHelper with Entra External ID B2C config

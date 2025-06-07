@@ -43,7 +43,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <MauiAsset Include="appsettings.json" />
+	  <MauiAsset Include="appsettings-windows.json" />
+	  <MauiAsset Include="appsettings-ios.json" />
+	  <MauiAsset Include="appsettings-android.json" />
 	  <!-- App Icon -->
     <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
@@ -74,6 +76,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings-ios.json" />
+    <Content Remove="appsettings-windows.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.5" />
     <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.72.1" />
@@ -100,7 +107,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="appsettings.json">
+    <Content Update="appsettings-android.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

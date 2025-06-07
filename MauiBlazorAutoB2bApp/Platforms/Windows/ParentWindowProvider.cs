@@ -1,5 +1,6 @@
 ﻿using MauiBlazorAutoB2bApp.Shared.Services;
 
+namespace MauiBlazorAutoB2bApp.Platforms.Windows;
 public class ParentWindowProvider : IParentWindowProvider
 {
 	public object GetParentWindowOrActivity()

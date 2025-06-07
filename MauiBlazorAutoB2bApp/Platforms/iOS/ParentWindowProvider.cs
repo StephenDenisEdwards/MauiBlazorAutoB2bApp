@@ -2,7 +2,7 @@
 using Foundation;
 using UIKit;
 
-namespace MauiBlazorAutoB2bApp.IoS;
+namespace MauiBlazorAutoB2bApp.iOS;
 
 public class ParentWindowProvider : IParentWindowProvider
 {
