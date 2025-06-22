@@ -13,7 +13,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 // Add device-specific services used by the MauiBlazorAutoB2bApp.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
+//builder.Services.AddSingleton<MauiBlazorAutoB2bApp.Shared.Services.IAuthenticationService, MsalWebAssemblyAuthenticationService>();
+builder.Services.AddScoped<MauiBlazorAutoB2bApp.Shared.Services.IAuthenticationService, MsalWebAssemblyAuthenticationService>();
 //builder.Services.AddScoped<WeatherService>();
+
+
 builder.Services.AddScoped(sp =>
 	new WeatherService(new HttpClient
 	{
@@ -21,5 +25,10 @@ builder.Services.AddScoped(sp =>
 	})
 );
 
+builder.Services.AddMsalAuthentication(options =>
+{
+	builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
+	//options.ProviderOptions.DefaultAccessTokenScopes.Add("api://api.id.uri/access_as_user");
+});
 
 await builder.Build().RunAsync();

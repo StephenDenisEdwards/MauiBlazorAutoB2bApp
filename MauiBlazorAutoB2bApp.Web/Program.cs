@@ -9,19 +9,45 @@ using Microsoft.IdentityModel.Abstractions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+/*
+	To run your app exclusively in interactive WebAssembly or Interactive Server mode rather than Interactive Auto mode,
+	you need to remove any server-side or wasm registrations and ensure your Razor components and startup
+	scripts use the WebAssembly or Server settings. Here are the steps:
+
+  App.razor
+
+		<HeadOutlet @rendermode="InteractiveAuto" />
+		   ...
+		   <Routes @rendermode="InteractiveAuto" />
+
+		<HeadOutlet @rendermode="InteractiveWebAssembly" />
+		   ...
+		   <Routes @rendermode="InteractiveWebAssembly" />
+
+		<HeadOutlet @rendermode="InteractiveServer" />
+	      ...
+		<Routes @rendermode="InteractiveAuto" />
+
+	Look for the "<-- comment out for WASM only" and "<-- comment out for SERVER only" comments and
+	do as they suggest.
+
+*/
+
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+	//.AddInteractiveServerComponents() // <-- comment out for WASM only
+	.AddInteractiveWebAssemblyComponents() // <-- comment out for SERVER only
+	;
 
 //builder.Services.AddHttpClient<WeatherService>();
 //builder.Services.AddHttpClient<WeatherService>(client =>
 //{
-	// client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-	// client.BaseAddress = new Uri("https://localhost:7250/"); // Use your API's URL
-	//client.BaseAddress = new Uri("https://localhost:7238/"); // Use your API's URL
+// client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+// client.BaseAddress = new Uri("https://localhost:7250/"); // Use your API's URL
+//client.BaseAddress = new Uri("https://localhost:7238/"); // Use your API's URL
 //});
 // Add device-specific services used by the MauiBlazorAutoB2bApp.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
+builder.Services.AddScoped<IAuthenticationService, MsalWebAuthenticationService>();
 //builder.Services.AddScoped<WeatherService>();
 builder.Services.AddScoped(sp =>
 	new WeatherService(new HttpClient
@@ -86,10 +112,10 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(
-        typeof(MauiBlazorAutoB2bApp.Shared._Imports).Assembly,
-        typeof(MauiBlazorAutoB2bApp.Web.Client._Imports).Assembly);
+	//.AddInteractiveServerRenderMode()  // <-- comment out for WASM only
+	.AddInteractiveWebAssemblyRenderMode()  // <-- comment out for SERVER only
+	.AddAdditionalAssemblies(
+		typeof(MauiBlazorAutoB2bApp.Shared._Imports).Assembly,
+		typeof(MauiBlazorAutoB2bApp.Web.Client._Imports).Assembly);
 
 app.Run();

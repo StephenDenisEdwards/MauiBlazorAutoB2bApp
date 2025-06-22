@@ -1,0 +1,39 @@
+﻿@using MauiBlazorAutoB2bApp.Shared.Services
+@using Microsoft.Maui.Devices.Sensors
+@inject AccelerometerService AccelService
+
+<h3>Accelerometer</h3>
+
+<p>X: @X</p>
+<p>Y: @Y</p>
+<p>Z: @Z</p>
+
+<button @onclick="Start">Start</button>
+<button @onclick="Stop">Stop</button>
+
+@code {
+    private double X, Y, Z;
+
+    protected override void OnInitialized()
+    {
+        AccelService.OnReadingChanged += OnAccelerometerChanged;
+    }
+
+    private void Start() => AccelService.Start();
+    private void Stop() => AccelService.Stop();
+
+    private void OnAccelerometerChanged(object? sender, AccelerometerChangedEventArgs e)
+    {
+        var data = e.Reading;
+        X = data.Acceleration.X;
+        Y = data.Acceleration.Y;
+        Z = data.Acceleration.Z;
+
+        InvokeAsync(StateHasChanged); // Ensure UI updates on sensor thread
+    }
+
+    public void Dispose()
+    {
+        AccelService.OnReadingChanged -= OnAccelerometerChanged;
+    }
+}

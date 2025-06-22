@@ -112,4 +112,10 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <MauiXaml Update="Pages\MixedPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+  </ItemGroup>
+
 </Project>

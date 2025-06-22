@@ -2,6 +2,9 @@
 
 //using MauiBlazorAutoB2bApp.MSALClient;
 
+//using MauiBlazorAutoB2bApp.Platforms.Android.Handlers;
+
+//using MauiBlazorAutoB2bApp.Platforms.Android.Handlers;
 using MauiBlazorAutoB2bApp.Services;
 using MauiBlazorAutoB2bApp.Shared.Services;
 using Microsoft.Extensions.Configuration;
@@ -9,8 +12,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
-using Microsoft.Maui.Devices;
-using System.Text;
 
 namespace MauiBlazorAutoB2bApp;
 
@@ -54,6 +55,14 @@ public static class MauiProgram
 		}
 
 		AzureAdOptions? azureConfig = builder.Configuration.GetSection("AzureAd").Get<AzureAdOptions>();
+
+
+#if ANDROID
+		builder.ConfigureMauiHandlers(handlers =>
+		{
+		//	handlers.AddHandler<NativeLabel, AndroidNativeLabelHandler>();
+		});
+#endif
 
 
 		/*
@@ -128,7 +137,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IFormFactor, FormFactor>();
 		// Register WeatherService for dependency injection
 		builder.Services.AddScoped<WeatherService>();
-//		builder.Services.AddSingleton<IAuthService, AuthService>();
+		//		builder.Services.AddSingleton<IAuthService, AuthService>();
 		//builder.Services.AddScoped(sp =>
 		//	new WeatherService(new HttpClient
 		//	{
@@ -150,6 +159,9 @@ public static class MauiProgram
 
 
 		//platform == DevicePlatform.Android
+
+		builder.Services.AddSingleton<AccelerometerService>();
+
 
 		builder.Services.AddHttpClient<WeatherService>(client =>
 		{

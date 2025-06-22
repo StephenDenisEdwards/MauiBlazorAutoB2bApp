@@ -118,11 +118,18 @@
 }
 @if (!AuthenticationService.IsAuthenticated)
 {
-    <button class="btn btn-primary" @onclick="HandleSignIn">Sign in</button>
+    <button class="btn btn-primary" @onclick="HandleSignIn">Sign in (via Service)</button>
+
+    <div>
+        <a href="authentication/login">Sign in (via direct)</a>
+
+    </div>
 }
 else
 {
     <button class="btn btn-secondary" @onclick="HandleSignOut">Sign out</button>
+
+
 }
 
 <div class="user-details mt-2" style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
