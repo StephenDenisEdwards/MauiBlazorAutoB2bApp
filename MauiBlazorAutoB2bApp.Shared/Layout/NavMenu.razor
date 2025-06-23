@@ -1,4 +1,7 @@
-﻿@using MauiBlazorAutoB2bApp.Shared.Components
+﻿@inject INativeNavigationService NativeNavigationService
+
+@using MauiBlazorAutoB2bApp.Shared.Components
+@using MauiBlazorAutoB2bApp.Shared.Services
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">MauiBlazorAutoB2bApp</a>
@@ -36,6 +39,21 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+
+
+        <!-- Native page navigation -->
+        <div class="nav-item px-3">
+            <button class="btn btn-link nav-link" @onclick="NavigateToNativePage">
+                <span class="bi bi-browser-chrome" aria-hidden="true"></span> Native Page
+            </button>
+        </div>
+
     </nav>
 </div>
 
+@code {
+    private void NavigateToNativePage()
+    {
+        NativeNavigationService.NavigateToNativePage();
+    }
+}

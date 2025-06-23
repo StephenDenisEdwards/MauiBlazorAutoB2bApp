@@ -28,14 +28,17 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
 
-        // Load config
-        //builder.Configuration.AddJsonStream(
-	       // new MemoryStream(
-		      //  Encoding.UTF8.GetBytes(
-			     //   File.ReadAllText(Path.Combine(FileSystem.AppDataDirectory, "appsettings.json"))
-		      //  )
-	       // )
-        //);
+		// Load config
+		//builder.Configuration.AddJsonStream(
+		// new MemoryStream(
+		//  Encoding.UTF8.GetBytes(
+		//   File.ReadAllText(Path.Combine(FileSystem.AppDataDirectory, "appsettings.json"))
+		//  )
+		// )
+		//);
+
+		// Register the native navigation service.
+		builder.Services.AddSingleton<INativeNavigationService, NativeNavigationService>();
 
 
 		if (DeviceInfo.Current.Platform == DevicePlatform.Android)
