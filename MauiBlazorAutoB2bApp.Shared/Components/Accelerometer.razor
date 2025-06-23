@@ -1,6 +1,6 @@
 ﻿@using MauiBlazorAutoB2bApp.Shared.Services
 @using Microsoft.Maui.Devices.Sensors
-@inject AccelerometerService AccelService
+@inject IAccelerometerService AccelerometerService
 
 <h3>Accelerometer</h3>
 
@@ -16,11 +16,11 @@
 
     protected override void OnInitialized()
     {
-        AccelService.OnReadingChanged += OnAccelerometerChanged;
+        AccelerometerService.OnReadingChanged += OnAccelerometerChanged;
     }
 
-    private void Start() => AccelService.Start();
-    private void Stop() => AccelService.Stop();
+    private void Start() => AccelerometerService.Start();
+    private void Stop() => AccelerometerService.Stop();
 
     private void OnAccelerometerChanged(object? sender, AccelerometerChangedEventArgs e)
     {
@@ -34,6 +34,6 @@
 
     public void Dispose()
     {
-        AccelService.OnReadingChanged -= OnAccelerometerChanged;
+        AccelerometerService.OnReadingChanged -= OnAccelerometerChanged;
     }
 }

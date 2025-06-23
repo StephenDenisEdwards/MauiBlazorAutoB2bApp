@@ -18,6 +18,10 @@ builder.Services.AddScoped<MauiBlazorAutoB2bApp.Shared.Services.IAuthenticationS
 //builder.Services.AddScoped<WeatherService>();
 
 
+//builder.Services.AddSingleton<INativeNavigationService, NativeNavigationService>();
+//builder.Services.AddSingleton<IAccelerometerService, MauiBlazorAutoB2bApp.Web.Services.AccelerometerService>();
+
+
 builder.Services.AddScoped(sp =>
 	new WeatherService(new HttpClient
 	{

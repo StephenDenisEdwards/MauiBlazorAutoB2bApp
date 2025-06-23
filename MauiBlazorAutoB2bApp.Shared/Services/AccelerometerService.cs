@@ -2,7 +2,7 @@
 
 namespace MauiBlazorAutoB2bApp.Shared.Services;
 
-public class AccelerometerService : IAsyncDisposable
+public class AccelerometerService : IAccelerometerService
 {
 	public event EventHandler<AccelerometerChangedEventArgs>? OnReadingChanged;
 

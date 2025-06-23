@@ -163,7 +163,7 @@ public static class MauiProgram
 
 		//platform == DevicePlatform.Android
 
-		builder.Services.AddSingleton<AccelerometerService>();
+		builder.Services.AddSingleton<IAccelerometerService, AccelerometerService>();
 
 
 		builder.Services.AddHttpClient<WeatherService>(client =>

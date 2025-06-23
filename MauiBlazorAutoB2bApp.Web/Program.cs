@@ -5,6 +5,7 @@ using MauiBlazorAutoB2bApp.Web;
 using MauiBlazorAutoB2bApp.Web.Services;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Abstractions;
+using Microsoft.Maui.Controls;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,10 @@ builder.Services.AddRazorComponents()
 // Add device-specific services used by the MauiBlazorAutoB2bApp.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 builder.Services.AddScoped<IAuthenticationService, MsalWebAuthenticationService>();
+
+builder.Services.AddSingleton<INativeNavigationService, NativeNavigationService>();
+builder.Services.AddSingleton<IAccelerometerService, MauiBlazorAutoB2bApp.Web.Services.AccelerometerService>();
+
 //builder.Services.AddScoped<WeatherService>();
 builder.Services.AddScoped(sp =>
 	new WeatherService(new HttpClient
