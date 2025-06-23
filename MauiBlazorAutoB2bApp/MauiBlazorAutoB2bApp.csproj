@@ -95,6 +95,7 @@
 
   <ItemGroup>
     <Folder Include="MSALClient\" />
+    <Folder Include="Pages\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -110,12 +111,6 @@
     <Content Update="appsettings-android.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <MauiXaml Update="Pages\MixedPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
   </ItemGroup>
 
 </Project>
