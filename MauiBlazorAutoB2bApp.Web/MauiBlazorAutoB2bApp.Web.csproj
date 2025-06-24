@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -24,6 +24,16 @@
 
 	<!-- Debug-InteractiveAuto configuration -->
 	<PropertyGroup Condition="'$(Configuration)'=='Debug-InteractiveAuto'">
+		<DefineConstants>$(DefineConstants);INTERACTIVE_AUTO</DefineConstants>
+	</PropertyGroup>
+
+	<!-- DEFAULT - Debug -->
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);INTERACTIVE_AUTO</DefineConstants>
+	</PropertyGroup>
+
+	<!-- DEFAULT - Release -->
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<DefineConstants>$(DefineConstants);INTERACTIVE_AUTO</DefineConstants>
 	</PropertyGroup>
 
