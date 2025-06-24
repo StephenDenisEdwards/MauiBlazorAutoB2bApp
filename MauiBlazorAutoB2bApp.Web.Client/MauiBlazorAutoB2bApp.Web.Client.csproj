@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <Configurations>Debug;Release;Debug-InteractiveWebAssembly;Debug-InteractiveAuto;Debug-InteractiveServer</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

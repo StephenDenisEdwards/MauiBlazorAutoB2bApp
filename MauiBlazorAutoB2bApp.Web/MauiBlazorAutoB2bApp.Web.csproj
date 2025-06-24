@@ -4,7 +4,28 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release;Debug-InteractiveWebAssembly;Debug-InteractiveAuto;Debug-InteractiveServer</Configurations>
+
+
+	  <!--<DefineConstants>$(DefineConstants);INTERACTIVE_SERVER</DefineConstants>-->
+	  <!--<DefineConstants>$(DefineConstants);INTERACTIVE_WASM</DefineConstants>-->
+	  <!--<DefineConstants>$(DefineConstants);INTERACTIVE_AUTO</DefineConstants>-->
   </PropertyGroup>
+
+	<!-- Debug-InteractiveServer configuration -->
+	<PropertyGroup Condition="'$(Configuration)'=='Debug-InteractiveServer'">
+		<DefineConstants>$(DefineConstants);INTERACTIVE_SERVER</DefineConstants>
+	</PropertyGroup>
+
+	<!-- Debug-InteractiveWasm configuration -->
+	<PropertyGroup Condition="'$(Configuration)'=='Debug-InteractiveWebAssembly'">
+		<DefineConstants>$(DefineConstants);INTERACTIVE_WASM</DefineConstants>
+	</PropertyGroup>
+
+	<!-- Debug-InteractiveAuto configuration -->
+	<PropertyGroup Condition="'$(Configuration)'=='Debug-InteractiveAuto'">
+		<DefineConstants>$(DefineConstants);INTERACTIVE_AUTO</DefineConstants>
+	</PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MauiBlazorAutoB2bApp.Web.Client\MauiBlazorAutoB2bApp.Web.Client.csproj" />

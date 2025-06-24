@@ -24,6 +24,8 @@ public class AccelerometerService : IAccelerometerService
 		}
 	}
 
+	public bool IsSupported => true;
+
 	private void Accelerometer_ReadingChanged(object? sender, AccelerometerChangedEventArgs e)
 	{
 		OnReadingChanged?.Invoke(this, e);

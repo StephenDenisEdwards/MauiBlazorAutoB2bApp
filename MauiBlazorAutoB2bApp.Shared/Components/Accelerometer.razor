@@ -4,12 +4,20 @@
 
 <h3>Accelerometer</h3>
 
-<p>X: @X</p>
-<p>Y: @Y</p>
-<p>Z: @Z</p>
+@if(AccelerometerService.IsSupported)
+{
+    <p>X: @X</p>
+    <p>Y: @Y</p>
+    <p>Z: @Z</p>
 
-<button @onclick="Start">Start</button>
-<button @onclick="Stop">Stop</button>
+    <p>Accelerometer is supported on this device.</p>
+    <button @onclick="Start">Start</button>
+    <button @onclick="Stop">Stop</button>
+}
+else
+{
+    <p>Accelerometer is not supported on this device.</p>
+}
 
 @code {
     private double X, Y, Z;

@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;Debug-InteractiveWebAssembly;Debug-InteractiveAuto;Debug-InteractiveServer</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

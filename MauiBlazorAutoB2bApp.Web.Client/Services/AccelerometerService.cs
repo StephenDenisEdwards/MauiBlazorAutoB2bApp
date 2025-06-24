@@ -1,7 +1,7 @@
 using MauiBlazorAutoB2bApp.Shared.Services;
 using Microsoft.Maui.Devices.Sensors;
 
-namespace MauiBlazorAutoB2bApp.Web.Services;
+namespace MauiBlazorAutoB2bApp.Web.Client.Services;
 
 public class AccelerometerService : IAccelerometerService
 {

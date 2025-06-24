@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MauiBlazorAutoB2bApp.Shared.Services;
 using MauiBlazorAutoB2bApp.Web.Client.Services;
+using AccelerometerService = MauiBlazorAutoB2bApp.Web.Client.Services.AccelerometerService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -14,12 +15,12 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 // Add device-specific services used by the MauiBlazorAutoB2bApp.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 //builder.Services.AddSingleton<MauiBlazorAutoB2bApp.Shared.Services.IAuthenticationService, MsalWebAssemblyAuthenticationService>();
-builder.Services.AddScoped<MauiBlazorAutoB2bApp.Shared.Services.IAuthenticationService, MsalWebAssemblyAuthenticationService>();
+builder.Services.AddScoped<IAuthenticationService, MsalWebAssemblyAuthenticationService>();
 //builder.Services.AddScoped<WeatherService>();
 
 
-//builder.Services.AddSingleton<INativeNavigationService, NativeNavigationService>();
-//builder.Services.AddSingleton<IAccelerometerService, MauiBlazorAutoB2bApp.Web.Services.AccelerometerService>();
+builder.Services.AddSingleton<INativeNavigationService, NativeNavigationService>();
+builder.Services.AddSingleton<IAccelerometerService, AccelerometerService>();
 
 
 builder.Services.AddScoped(sp =>

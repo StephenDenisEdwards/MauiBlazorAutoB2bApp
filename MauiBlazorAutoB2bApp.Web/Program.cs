@@ -34,10 +34,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 */
 
+#if INTERACTIVE_SERVER
+// Code specific to interactive server mode.
+builder.Services.AddRazorComponents()
+	.AddInteractiveServerComponents(); // <-- comment out for WASM only
+	//.AddInteractiveWebAssemblyComponents(); // <-- comment out for SERVER only
+#elif INTERACTIVE_WASM
+// Code specific to interactive WebAssembly mode.
 builder.Services.AddRazorComponents()
 	//.AddInteractiveServerComponents() // <-- comment out for WASM only
-	.AddInteractiveWebAssemblyComponents() // <-- comment out for SERVER only
-	;
+	.AddInteractiveWebAssemblyComponents(); // <-- comment out for SERVER only
+#elif INTERACTIVE_AUTO
+// Code specific to interactive auto mode.
+builder.Services.AddRazorComponents()
+	.AddInteractiveServerComponents() // <-- comment out for WASM only
+	.AddInteractiveWebAssemblyComponents(); // <-- comment out for SERVER only
+#endif
+
 
 //builder.Services.AddHttpClient<WeatherService>();
 //builder.Services.AddHttpClient<WeatherService>(client =>
@@ -116,11 +129,31 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+
+
+#if INTERACTIVE_SERVER
+// Code specific to interactive server mode.
 app.MapRazorComponents<App>()
-	//.AddInteractiveServerRenderMode()  // <-- comment out for WASM only
+	.AddInteractiveServerRenderMode()  // <-- comment out for WASM only
+	.AddAdditionalAssemblies(
+		typeof(MauiBlazorAutoB2bApp.Shared._Imports).Assembly,
+		typeof(MauiBlazorAutoB2bApp.Web.Client._Imports).Assembly);
+#elif INTERACTIVE_WASM
+// Code specific to interactive WebAssembly mode.
+app.MapRazorComponents<App>()
 	.AddInteractiveWebAssemblyRenderMode()  // <-- comment out for SERVER only
 	.AddAdditionalAssemblies(
 		typeof(MauiBlazorAutoB2bApp.Shared._Imports).Assembly,
 		typeof(MauiBlazorAutoB2bApp.Web.Client._Imports).Assembly);
+#elif INTERACTIVE_AUTO
+// Code specific to interactive auto mode.
+app.MapRazorComponents<App>()
+	.AddInteractiveServerRenderMode()  // <-- comment out for WASM only
+	.AddInteractiveWebAssemblyRenderMode()  // <-- comment out for SERVER only
+	.AddAdditionalAssemblies(
+		typeof(MauiBlazorAutoB2bApp.Shared._Imports).Assembly,
+		typeof(MauiBlazorAutoB2bApp.Web.Client._Imports).Assembly);
+#endif
+
 
 app.Run();

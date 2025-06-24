@@ -7,5 +7,6 @@ public interface IAccelerometerService : IAsyncDisposable
 	event EventHandler<AccelerometerChangedEventArgs>? OnReadingChanged;
 	void Start();
 	void Stop();
-	//ValueTask DisposeAsync();
+
+	bool IsSupported => false;
 }
