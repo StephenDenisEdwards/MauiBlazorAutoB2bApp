@@ -70,8 +70,31 @@
 
     private async Task HandleSignIn()
     {
+        try
+        {
+            AuthenticationResult result = await AuthenticationService.SignInAsync();
 
-        AuthenticationResult result = await AuthenticationService.SignInAsync();
+            if (result != null)
+            {
+                Debug.WriteLine($"Access Token: {result.AccessToken}");
+                var now = DateTimeOffset.Now;
+                await JS.InvokeVoidAsync("alert", $"[{now:yyyy-MM-dd HH:mm:ss zzz}] Access Token: {result.AccessToken}");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "AuthenticationResult is null");
+            }
+        }
+        catch (Exception e)
+        {
+            await JS.InvokeVoidAsync("alert", "Exception");
+            Console.WriteLine(e);
+            throw;
+        }
+
+
+
+
         StateHasChanged();
 //        await UpdateFromCache();
 
@@ -136,12 +159,14 @@ else
 
     @if (AuthenticationService.IsSignedIn && AuthenticationService.User is not null)
 {
+        Debug.WriteLine("Is signed in.");
         <p><strong>User Details:</strong></p>
         <p>Username: @AuthenticationService.User.Username</p>
 }
 
     @if (AuthenticationService.IsAuthenticated && !string.IsNullOrEmpty(AuthenticationService.Token))
     {
+        Debug.WriteLine($"Access Token: {AuthenticationService.Token}");
         <p><strong>Access Token:</strong></p>
         <p>Token: @AuthenticationService.Token</p>
     }
@@ -149,6 +174,7 @@ else
     {
         if (AuthenticationService.IsSignedIn)
         {
+            Debug.WriteLine("Is signed in.");
             <p><strong>Access Token:</strong></p>
             <p>Not Authenticated (Token Expired ?)</p>
         }

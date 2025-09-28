@@ -12,16 +12,7 @@
 				/>
 			</intent-filter>
 		</activity>
-		<activity android:name="MauiAppBasic.Platforms.Android.Resources.MsalActivity" android:configChanges="orientation|screenSize" android:exported="true">
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data 
-					android:scheme="msal44d84416-03ea-4c42-8e3a-75a5a4439e5b" 
-					android:host="auth" />
-			</intent-filter>
-		</activity>
+
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />

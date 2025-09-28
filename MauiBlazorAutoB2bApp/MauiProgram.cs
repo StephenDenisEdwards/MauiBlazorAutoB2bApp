@@ -109,17 +109,18 @@ public static class MauiProgram
 		//}
 
 		// Register MSAL public client with login.microsoftonline.com authority
+
+		var userFlow = "tingler-app-userflow";
+		var authority = $"https://{azureConfig.TenantId}.ciamlogin.com/{azureConfig.TenantId}.onmicrosoft.com/{userFlow}";
+
 		builder.Services.AddSingleton<IPublicClientApplication>(sp =>
 				PublicClientApplicationBuilder
 					.Create(azureConfig.ClientId)
 					.WithExperimentalFeatures() // this is for upcoming logger
-												//.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId)
-
-					.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantDomain, true) // Use true for debug mode to allow authority validation
-																								   //.WithAuthority(AzureCloudInstance.AzurePublic, azureConfig.TenantId, true) // Use true for debug mode to allow authority validation
-
-					// .WithAuthority("https://tinglercustomers.ciamlogin.com", "tinglercustomers.onmicrosoft.com")
-					.WithAuthority("https://tinglercustomers.ciamlogin.com/tinglercustomers.onmicrosoft.com/tingler-app-userflow")
+					// ✅ Rule of thumb for validateAuthority
+					//	AAD(work / school / Microsoft accounts) → validateAuthority: true(default).
+					//	AAD B2C / Entra External ID(CIAM) → validateAuthority: false, because the authority includes a user flow (policy).
+					.WithAuthority(authority, validateAuthority:false) // Use true for debug mode to allow authority validation
 					.WithRedirectUri(azureConfig.RedirectUri)
 					.WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
 					.Build()
