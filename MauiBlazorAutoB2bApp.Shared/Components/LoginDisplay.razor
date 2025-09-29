@@ -1,54 +1,17 @@
-﻿@using System.ComponentModel.Design
-@using System.Diagnostics
+﻿@using System.Diagnostics
 @using MauiBlazorAutoB2bApp.Shared.Services
 @using Microsoft.Identity.Client
-@* @inject IAuthService AuthService *@
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
 @code {
-    // private bool _isAuthenticated;
-    // private bool _isSignedIn;
-    // private IAccount? _user;
-
-    // private string? _token;
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     // var pca = PublicClientApplicationBuilder
-    //     //     .Create(AuthenticationService.get.GetClientId())
-    //     //     //	// We can seed with SignInAuthority, but we'll override at call time.
-    //     //     .WithB2CAuthority(AuthService.GetSignInAuthority())
-    //     //     .WithRedirectUri($"msal{AuthService.GetClientId()}://auth")
-    //     //     .Build();
-
-    //     // _isAuthenticated = (await pca.GetAccountsAsync()).Any();
-    // }
     protected override async Task OnInitializedAsync()
     {
         await AuthenticationService.UpdateFromCache();
 
         StateHasChanged();
     }
-
-    // private async Task UpdateFromCache()
-    // {
-    //     _isAuthenticated = false;
-    //     _isSignedIn = false;
-
-    //     // Attempt to restore the user from the persistent cache.
-    //     _user = await AuthenticationService.GetCachedAccountAsync();
-    //     _token = await AuthenticationService.GetCachedTokenAsync();
-
-    //     if (_user != null)
-    //     {
-    //         if (!string.IsNullOrEmpty(_token))
-    //         {
-    //             _isAuthenticated = true;
-    //         }
-    //         _isSignedIn = true;
-    //     }
-    // }
 
     private async Task ShowJsAlert()
     {
@@ -58,13 +21,6 @@
 
     private async Task HandleSignUp()
     {
-
-
-        // if (await AuthService.SignUpAsync())
-        // {
-        //     _isAuthenticated = true;
-        //     Nav.NavigateTo("/", true);
-        // }
         await ShowJsAlert();
     }
 
@@ -92,67 +48,22 @@
             throw;
         }
 
-
-
-
         StateHasChanged();
-//        await UpdateFromCache();
-
-        // _token = result.AccessToken;
-
-        // _user = result.Account;
-        // _isSignedIn = true;
-        // // if (_user is null)
-        // // {
-        // //     await JS.InvokeVoidAsync("alert", "_user is null");
-        // // }
-        // // else
-        // // {
-        // //     await JS.InvokeVoidAsync("alert", _user.Username);
-        // // }
-
-        // //  await JS.InvokeVoidAsync("Access Token", result.AccessToken);
-
-        // if (!string.IsNullOrWhiteSpace(_token))
-        // {
-        //     // await JS.InvokeVoidAsync("alert", result.AccessToken);
-        //     _isAuthenticated = true;
-        //     StateHasChanged(); // Refresh the component to show the sign-out button
-        //     // Optionally, remove or comment out the line below if you don't want to navigate away.
-        //     // Nav.NavigateTo("/", true);
-        // }
     }
-
-    // private async Task SignOut()
-    // {
-    //     await AuthService.SignOutAsync();
-    //     _user = null;
-    //     _isSignedIn = false;
-    // }
 
     private async Task HandleSignOut()
     {
         await AuthenticationService.SignOutAsync();
-        // await UpdateFromCache();
-        //_isAuthenticated = false;
         StateHasChanged();
-        //Nav.NavigateTo("/", true);
     }
 }
 @if (!AuthenticationService.IsAuthenticated)
 {
     <button class="btn btn-primary" @onclick="HandleSignIn">Sign in (via Service)</button>
-
-    <div>
-        <a href="authentication/login">Sign in (via direct)</a>
-
-    </div>
 }
 else
 {
     <button class="btn btn-secondary" @onclick="HandleSignOut">Sign out</button>
-
-
 }
 
 <div class="user-details mt-2" style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
@@ -163,7 +74,6 @@ else
         <p><strong>User Details:</strong></p>
         <p>Username: @AuthenticationService.User.Username</p>
 }
-
     @if (AuthenticationService.IsAuthenticated && !string.IsNullOrEmpty(AuthenticationService.Token))
     {
         Debug.WriteLine($"Access Token: {AuthenticationService.Token}");
